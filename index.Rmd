@@ -1,0 +1,29 @@
+---
+title: "My awesome website"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cerulean
+---
+
+# This is Jeff's awesome website
+
+![](https://media.giphy.com/media/drXGoW1iudhKw/giphy.gif)
+
+i learned all my data science from [P8105](https://p8105.com/)!
+
+to learn about this page, go [here](about.html)
+to go to home, clink[here](index.html)
+
+# some other stuff
+
+Here's a really cool picture that I took: 
+<img src="images/ted.jpg" style="width:75%">
+
+
+# plots 
+
+here is my plot [here](plots.html)
+
+Heres a scatterplot 

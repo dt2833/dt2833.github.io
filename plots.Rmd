@@ -1,0 +1,25 @@
+---
+title: "My awesome website"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+ 
+---
+
+here is a scatterplot 
+
+```{r}
+library(tidyverse)
+
+plots_df = 
+  tibble( 
+    x = rnorm(100, 2, 3), 
+    y = x + rnorm(100)
+    )
+
+plots_df |> 
+  ggplot(aes(x=x))|> 
+  gemo_point()
+```
+
