@@ -7,7 +7,7 @@ output:
     theme: cerulean
 ---
 
-# Welcome to Dominique's Website
+# Welcome !
 
 ![](https://i.pinimg.com/originals/1b/47/44/1b47443c436e1c82a5647ad70230d6dc.gif)
 
