@@ -1,16 +1,16 @@
-name: "Yay internet!"
+name: "Welcome!"
 output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "About"
+    - text: "About Me"
       href: about.html
-    - text: "Plots"
-      href: plots.html
     - icon: fa-envelope fa-lg
       href: mailto:<dt2833@cumc.columbia.edu>
     - icon: fa-github fa-lg
       href: http://github.com/<dt2833>/
+    - icon: fa-linkedin fa-lg
+      href: http://www.linkedin.com/in/dominique-t-137186205/
 output:
   html_document:
     theme: cerulean

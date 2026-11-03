@@ -1,5 +1,5 @@
 ---
-title: "My awesome website"
+title: "My Learned and Learning"
 output: 
   html_document:
     toc: true
@@ -7,4 +7,23 @@ output:
 
 ---
 
-this is about page
+#Education 
+
+
+### COLUMBIA UNIVERSITY MAILMAN SCHOOL OF PUBLIC HEALTH 
+Master of Public Health - Department of Epidemiology, Certificate in Applied Biostatistics 
+
+
+### UNIVERSITY OF CALIFORNIA, BERKELEY
+Public Health BA, Global Poverty and Practice Minor
+
+#Work Experience 
+
+### COLUMBIA UNIVERSITY IRVING MEDICAL CENTER - Cancer Clinical Protocol and Data Management 
+Clinical Research and Data Coordinator II, Thoracic Oncology Clinical Trials 
+
+### PUBLIC HEALTH INSTITUTE – Health Intervention Projects for Underserved Populations 
+Project Assistant 
+
+### UCSF NRG ONCOLOGY BIOSPECIMEN BANK 
+Research Assistant 

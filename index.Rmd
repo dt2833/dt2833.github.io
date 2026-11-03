@@ -1,5 +1,5 @@
 ---
-title: "My awesome website"
+title: "Dominique's World"
 output: 
   html_document:
     toc: true
@@ -7,23 +7,17 @@ output:
     theme: cerulean
 ---
 
-# This is Jeff's awesome website
+# Welcome to Dominique's Website
 
-![](https://media.giphy.com/media/drXGoW1iudhKw/giphy.gif)
+![](https://i.pinimg.com/originals/1b/47/44/1b47443c436e1c82a5647ad70230d6dc.gif)
 
-i learned all my data science from [P8105](https://p8105.com/)!
+I learned all my data science from [P8105](https://p8105.com/)!
 
-to learn about this page, go [here](about.html)
-to go to home, clink[here](index.html)
-
-# some other stuff
-
-Here's a really cool picture that I took: 
-<img src="images/ted.jpg" style="width:75%">
-
+To learn about my other learning, go [here](about.html)
+to go to home, click[here](index.html)
 
 # plots 
 
-here is my plot [here](plots.html)
+Here are my plot [here](plots.html)
 
 Heres a scatterplot 

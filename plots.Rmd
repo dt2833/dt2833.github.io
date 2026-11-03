@@ -19,7 +19,7 @@ plots_df =
     )
 
 plots_df |> 
-  ggplot(aes(x=x))|> 
-  gemo_point()
+  ggplot(aes(x=x))+ 
+  geom_point()
 ```
 
