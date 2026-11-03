@@ -1,0 +1,155 @@
+---
+title: "plotly"
+author: "Dominique Tzou"
+date: "2026-10-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Data land libraries 
+
+Loaind libraries 
+
+```{r, eval = FALSE}
+library(tidyverse)
+library(p8105.datasets) 
+library(plotly) 
+library(httr)
+library(jsonlite)
+
+
+```
+ loading data 
+```{r}
+get_all_inspections = function(url) {
+  
+  all_inspections = vector("list", length = 0)
+  
+  loop_index = 1
+  chunk_size = 50000
+  DO_NEXT = TRUE
+  
+  while (DO_NEXT) {
+    message("Getting data, page ", loop_index)
+    
+    all_inspections[[loop_index]] = 
+      GET(url,
+          query = list(`$order` = "zipcode",
+                       `$limit` = chunk_size,
+                       `$offset` = as.integer((loop_index - 1) * chunk_size)
+                       )
+          ) %>%
+      content("text") %>%
+      fromJSON() %>%
+      as_tibble()
+    
+    DO_NEXT = dim(all_inspections[[loop_index]])[1] == chunk_size
+    loop_index = loop_index + 1
+  }
+  
+  all_inspections
+  
+}
+
+url = "https://data.cityofnewyork.us/resource/43nn-pn8j.json"
+
+nyc_inspections = 
+  get_all_inspections(url) %>%
+  bind_rows()
+
+manhattan_inspection_grade = 
+  nyc_inspections |> 
+  filter( boro == "Manhattan", !is.na(grade)) |> #selecting manhattan restaurants
+  group_by(camis)|>
+        filter(inspection_date == max(inspection_date, na.rm = TRUE)) |> # selecting latest grade
+  mutate(grade = as.factor(grade)) |> #transform grade into factor so it can used in plots
+  select(-violation_code) |> #selecting just grade
+  distinct(camis, .keep_all = TRUE) #removing duplicates
+          
+  
+
+  
+
+```
+
+```{r}
+manhattan_inspection_grade|> 
+  mutate(text_label = str_c("Grade: $", grade)) |>
+ plot_ly( 
+    x = ~ latitude, y = ~longitude, type = "scatter", mode = "markers", 
+    color= -grade, text = ~text_label, alpha = 0.5)
+```
+
+```{r}
+manhattan_inspection_grade|> 
+  mutate(text_label = str_c("Grade: $", grade)) |>
+ plot_ly(
+    x = ~ longitude, y = ~latitude, type = "scatter", mode = "markers")
+```
+
+
+```{r}
+scatter_ggplot = 
+  manhattan_inspection_grade|>
+  ggplot(aes(x = latitude, y = longitude, color = grade)) +
+  geom_point(alpha = 0.25) +
+  coord_cartesian() +
+
+ggplotly(scatter_ggplot)
+
+
+```
+ 
+ 
+```{r, eval = FALSE}
+data(nyc_airbnb)
+
+nyc_airbnb = nyc_airbnb |> 
+  mutate(rating = review_scores_location/2) |> 
+  select( neighbourhood_group, neighborhood, rating, price, room_type, lat, long) |> 
+  
+  filter(
+    is.na(rating), 
+    neighborhood_group == "Manhattan", 
+    room_type == "Entire home/apt", 
+    price |> 100:500)
+  
+```
+
+
+
+
+```{rr, eval = FALSE}
+ nyc_airbnb |> 
+  mutate( 
+    text_label = str_c("Price:$", price, "Rating:", rating)) |>  #so that it hovers
+  plot_ly( x = ~ lat, y = ~long, 
+    x = ~ lat, y = ~long, type = "scatter", mode = "markers", 
+    color= -price)
+```
+ 
+ ## boxplot
+ 
+```{r, eval = FALSE}
+nyc_airbnb |> 
+  mutate(neighbourhood = fact_reorder(neighbourhood, price)) |> 
+  plot_ly( y = ~price, color = -neighbourhood)
+```
+
+
+## barchart 
+
+```{r, eval = FALSE }
+ nyc_airbnb  |> 
+  
+  count(neighbourhood) |> 
+  plot_ly( x = ~neighbourhood, y = ~n, type = "bar", color = ~neighbourhood )
+```
+
+## ggplotly 
+
+
