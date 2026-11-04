@@ -118,6 +118,7 @@ manhattan_inspection_grade =
 
 ```
 
+## scatterplot
         
 ```{r}
 nyc_inspections|> 
@@ -131,68 +132,11 @@ nyc_inspections|>
     color= ~critical_flag,  
     colors = c("#EE1289", "#98F5FF"),
         marker = list(size = 4),
-    text = ~text_label, alpha = 0.25)
+    text = ~text_label, alpha = 0.25) |> 
+  layout(title = 'Manhattan Restaurant Critical Inspection Statuses')
 ```
 
 
-```{r}
- manhattan_inspection_grade |> 
-  mutate( 
-    text_label = str_c("Grade: ", grade)) |>  #so that it hovers
-  plot_ly( x = ~ longitude, y = ~latitude, type = "scatter", mode = "markers", 
-    color= ~score)
-```
-
-
-```{r}
-scatter_ggplot = 
-  manhattan_inspection_grade|>
-  ggplot(aes(x = latitude, y = longitude, color = grade)) +
-  geom_point(alpha = 0.25) +
-  coord_cartesian() +
-
-ggplotly(scatter_ggplot)
-
-
-```
- 
-```{r}
-
-nyc_airbnb |>
-  mutate(text_label = str_c("Price: $", price, "\nRating: ", rating)) |> 
-  plot_ly(
-    x = ~lat, y = ~long, type = "scatter", mode = "markers",
-    color = ~price, text = ~text_label, alpha = 0.5)
-```
- 
- 
-```{r, eval = FALSE}
-data(nyc_airbnb)
-
-nyc_airbnb = 
-  nyc_airbnb |> 
-  mutate(rating = review_scores_location / 2) |>
-  select(
-    neighbourhood_group, neighbourhood, rating, price, room_type, lat, long) |>
-  filter(
-    !is.na(rating), 
-    neighbourhood_group == "Manhattan",
-    room_type == "Entire home/apt",
-    price %in% 100:500)
-  
-```
-
-
-
-
-```{rr, eval = FALSE}
- nyc_airbnb |> 
-  mutate( 
-    text_label = str_c("Price:$", price, "Rating:", rating)) |>  #so that it hovers
-  plot_ly( x = ~ lat, y = ~long, 
-    x = ~ lat, y = ~long, type = "scatter", mode = "markers", 
-    color= -price)
-```
  
  ## boxplot
  
@@ -200,7 +144,9 @@ nyc_airbnb =
 nyc_inspections |> 
   filter( boro != 0, !is.na(score))|>
   mutate(boro = fct_reorder(boro, score)) |> 
-   plot_ly(y = ~score, color = ~boro, type = "box", colors = "viridis")
+   plot_ly(y = ~score, color = ~boro, type = "box", colors = "viridis")|> 
+  layout(title = 'Distribution of Restaurant Inspection Scores by NYC Borough')
+
 ```
 
 
@@ -211,12 +157,13 @@ nyc_inspections |>
   filter( boro != 0, !is.na(grade), grade %in% c("A", "B", "C"))|>
   group_by(boro)|>
   count(grade) |> 
-  mutate(boro = fct_reorder(boro, n)) |> 
-  plot_ly(x = ~boro, y = ~n, group = ~grade, color = ~grade, type = "bar", colors = "viridis")
+  mutate(boro = fct_reorder(boro, n), grade = fct_reorder(grade, n)) |> 
+  plot_ly(x = ~boro, y = ~n, group = ~grade, color = ~grade, type = "bar", colors = "viridis")|> 
+  layout(title = 'Number of Inspected Restaurants by NYC Borough and Grade',
+         xaxis = list(title = "NYC Borough"),  
+         yaxis = list(title = "Number of Inspected Restaurants"))
 
 
 ```
-
-## ggplotly 
 
 
