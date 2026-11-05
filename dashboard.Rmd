@@ -110,7 +110,7 @@ nyc_inspections|>
   filter(boro == "Manhattan", 
          !is.na(longitude), longitude!=0, !is.na(latitude), latitude!=0, 
          critical_flag != "Not Applicable")|>
-  mutate(text_label = str_c("Restaurant:", dba, "Inspection Date:", inspection_date_only))|>
+  mutate(text_label = str_c("Restaurant:", dba, "\n Latest Inspection Date:", inspection_date_only))|>
  plot_ly( 
     x = ~ longitude, y = ~latitude, type = "scatter", mode = "markers", 
     color= ~critical_flag,  
