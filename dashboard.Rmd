@@ -1,13 +1,13 @@
 ---
-title: "Untitled"
+title: "New York City Restaurant Inspection Dashboard"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
 ---
-Loading libraries 
 
-```{r}
+```{r setup, include=FALSE}
+library(flexdashboard)
 library(tidyverse)
 library(p8105.datasets) 
 library(plotly) 
@@ -19,8 +19,8 @@ library(lubridate)
 
 ```
 
-```{r setup, include=FALSE}
-library(tidyverse)
+
+```{r, include=FALSE}
 
 knitr::opts_chunk$set(
 	echo = TRUE,
@@ -42,9 +42,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 
-
-loading data 
-```{r}
+```{r include=FALSE}
 get_all_inspections = function(url) {
   
   all_inspections = vector("list", length = 0)
@@ -101,17 +99,14 @@ nyc_inspections =
 
 ```
 
-```
-
-
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Chart A
+### Manhattan Restaurant Critical Inspection Statuses
 
-```{r}
+```{r, echo=FALSE}
 nyc_inspections|> 
-  mutate(   inspection_date_only = as.Date(inspection_date)) |> 
+  mutate(inspection_date_only = as.Date(inspection_date)) |> 
   filter(boro == "Manhattan", 
          !is.na(longitude), longitude!=0, !is.na(latitude), latitude!=0, 
          critical_flag != "Not Applicable")|>
@@ -121,39 +116,37 @@ nyc_inspections|>
     color= ~critical_flag,  
     colors = c("#EE1289", "#98F5FF"),
         marker = list(size = 4),
-    text = ~text_label, alpha = 0.25) |> 
-  layout(title = 'Manhattan Restaurant Critical Inspection Statuses')
+    text = ~text_label, alpha = 0.4) 
 ```
 
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Chart B
+### Distribution of Restaurant Inspection Scores by NYC Borough
 
-```{r}
+```{r, echo=FALSE}
 nyc_inspections |> 
   filter( boro != 0, !is.na(score))|>
   mutate(boro = fct_reorder(boro, score)) |> 
-   plot_ly(y = ~score, color = ~boro, type = "box", colors = "viridis")|> 
-  layout(title = 'Distribution of Restaurant Inspection Scores by NYC Borough')
+   plot_ly(y = ~score, color = ~boro, type = "box", colors = "viridis")
 
 ```
 
-### Chart C
 
-```{r}
+### Number of Inspected Restaurants by NYC Borough and Grade
+
+```{r, echo=FALSE}
 nyc_inspections |> 
   filter( boro != 0, !is.na(grade), grade %in% c("A", "B", "C"))|>
   group_by(boro)|>
   count(grade) |> 
   mutate(boro = fct_reorder(boro, n), grade = fct_reorder(grade, n)) |> 
   plot_ly(x = ~boro, y = ~n, group = ~grade, color = ~grade, type = "bar", colors = "viridis")|> 
-  layout(title = 'Number of Inspected Restaurants by NYC Borough and Grade',
+  layout(
          xaxis = list(title = "NYC Borough"),  
          yaxis = list(title = "Number of Inspected Restaurants"))
 
 
 ```
 
-run this  after dashboard content made |> 
-rmarkdown::render("dashboard.Rmd", output_format = "flexdashboard::flex_dashboard")
+
