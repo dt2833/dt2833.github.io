@@ -5,10 +5,104 @@ output:
     orientation: columns
     vertical_layout: fill
 ---
+Loading libraries 
+
+```{r}
+library(tidyverse)
+library(p8105.datasets) 
+library(plotly) 
+library(httr)
+library(jsonlite)
+library(dplyr)
+library(lubridate)
+
+
+```
 
 ```{r setup, include=FALSE}
-library(flexdashboard)
+library(tidyverse)
+
+knitr::opts_chunk$set(
+	echo = TRUE,
+	warning = FALSE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
 ```
+
+
+
+loading data 
+```{r}
+get_all_inspections = function(url) {
+  
+  all_inspections = vector("list", length = 0)
+  
+  loop_index = 1
+  chunk_size = 50000
+  DO_NEXT = TRUE
+  
+  while (DO_NEXT) {
+    message("Getting data, page ", loop_index)
+    
+    all_inspections[[loop_index]] = 
+      GET(url,
+          query = list(`$order` = "zipcode",
+                       `$limit` = chunk_size,
+                       `$offset` = as.integer((loop_index - 1) * chunk_size)
+                       )
+          ) |>
+      content("text") |>
+      fromJSON() |>
+      as_tibble()
+    
+    DO_NEXT = dim(all_inspections[[loop_index]])[1] == chunk_size
+    loop_index = loop_index + 1
+  }
+  
+  all_inspections
+  
+}
+
+url = "https://data.cityofnewyork.us/resource/43nn-pn8j.json"
+
+nyc_inspections = 
+  get_all_inspections(url) %>%
+  bind_rows() |> 
+  janitor::clean_names()
+
+nyc_inspections =
+  nyc_inspections |> 
+    mutate(           #fixing variables
+      grade = factor( #transform grade into ordinal factor so it can used in plots
+               grade, 
+               levels = c("A", "B", "C", "N", "Z"), 
+               ordered = TRUE),
+        score = as.numeric(score), #transform score into numeric so it can used in plots
+        longitude = as.numeric(longitude),#compatible for scatter plot
+        latitude = as.numeric(latitude) 
+      ) |>
+  group_by(camis)|>
+        filter(inspection_date == max(inspection_date, na.rm = TRUE)) |> # selecting latest grade
+  select(-violation_code) |> #selecting just grade
+  distinct(camis, .keep_all = TRUE) #removing duplicates
+      
+
+```
+
+```
+
 
 Column {data-width=650}
 -----------------------------------------------------------------------
@@ -16,7 +110,19 @@ Column {data-width=650}
 ### Chart A
 
 ```{r}
-
+nyc_inspections|> 
+  mutate(   inspection_date_only = as.Date(inspection_date)) |> 
+  filter(boro == "Manhattan", 
+         !is.na(longitude), longitude!=0, !is.na(latitude), latitude!=0, 
+         critical_flag != "Not Applicable")|>
+  mutate(text_label = str_c("Restaurant:", dba, "Inspection Date:", inspection_date_only))|>
+ plot_ly( 
+    x = ~ longitude, y = ~latitude, type = "scatter", mode = "markers", 
+    color= ~critical_flag,  
+    colors = c("#EE1289", "#98F5FF"),
+        marker = list(size = 4),
+    text = ~text_label, alpha = 0.25) |> 
+  layout(title = 'Manhattan Restaurant Critical Inspection Statuses')
 ```
 
 Column {data-width=350}
@@ -25,14 +131,29 @@ Column {data-width=350}
 ### Chart B
 
 ```{r}
+nyc_inspections |> 
+  filter( boro != 0, !is.na(score))|>
+  mutate(boro = fct_reorder(boro, score)) |> 
+   plot_ly(y = ~score, color = ~boro, type = "box", colors = "viridis")|> 
+  layout(title = 'Distribution of Restaurant Inspection Scores by NYC Borough')
 
 ```
 
 ### Chart C
 
 ```{r}
+nyc_inspections |> 
+  filter( boro != 0, !is.na(grade), grade %in% c("A", "B", "C"))|>
+  group_by(boro)|>
+  count(grade) |> 
+  mutate(boro = fct_reorder(boro, n), grade = fct_reorder(grade, n)) |> 
+  plot_ly(x = ~boro, y = ~n, group = ~grade, color = ~grade, type = "bar", colors = "viridis")|> 
+  layout(title = 'Number of Inspected Restaurants by NYC Borough and Grade',
+         xaxis = list(title = "NYC Borough"),  
+         yaxis = list(title = "Number of Inspected Restaurants"))
+
 
 ```
 
 run this  after dashboard content made |> 
-rmarkdown::render("dashboard_template.Rmd", output_format = "flexdashboard::flex_dashboard")
+rmarkdown::render("dashboard.Rmd", output_format = "flexdashboard::flex_dashboard")

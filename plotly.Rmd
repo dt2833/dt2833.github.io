@@ -100,29 +100,13 @@ nyc_inspections =
   distinct(camis, .keep_all = TRUE) #removing duplicates
       
 
-manhattan_inspection_grade = 
-  nyc_inspections |> 
-  filter( boro == "Manhattan", !is.na(grade)) |> #selecting manhattan restaurants
-  
- |>  #compatiable for scatterplot
-  mutate(quintile = cut(
-     score,
-      breaks = quantile(score, probs = seq(0, 1, 0.20)),
-      labels = c("Very Low", "Low", "Medium", "High", "Very High"),
-      include.lowest = TRUE
-    )
-  )     
-  
-
-  
-
 ```
 
 ## scatterplot
         
 ```{r}
 nyc_inspections|> 
-  mutate(   inspection_date_only = as.Date(inspection_date)) |> 
+  mutate( inspection_date_only = as.Date(inspection_date)) |> 
   filter(boro == "Manhattan", 
          !is.na(longitude), longitude!=0, !is.na(latitude), latitude!=0, 
          critical_flag != "Not Applicable")|>
