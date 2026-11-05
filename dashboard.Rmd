@@ -116,7 +116,10 @@ nyc_inspections|>
     color= ~critical_flag,  
     colors = c("#EE1289", "#98F5FF"),
         marker = list(size = 4),
-    text = ~text_label, alpha = 0.4) 
+    text = ~text_label, alpha = 0.4) |> 
+  layout(
+  legend = list(
+    title = list(text = "<b>Critical Status</b>")))
 ```
 
 Column {data-width=350}
@@ -128,7 +131,10 @@ Column {data-width=350}
 nyc_inspections |> 
   filter( boro != 0, !is.na(score))|>
   mutate(boro = fct_reorder(boro, score)) |> 
-   plot_ly(y = ~score, color = ~boro, type = "box", colors = "viridis")
+   plot_ly(y = ~score, color = ~boro, type = "box", colors = "viridis")|> 
+  layout(
+  legend = list(
+    title = list(text = "<b>NYC Borough</b>")))
 
 ```
 
@@ -144,7 +150,9 @@ nyc_inspections |>
   plot_ly(x = ~boro, y = ~n, group = ~grade, color = ~grade, type = "bar", colors = "viridis")|> 
   layout(
          xaxis = list(title = "NYC Borough"),  
-         yaxis = list(title = "Number of Inspected Restaurants"))
+         yaxis = list(title = "Number of Inspected Restaurants"),
+         legend = list(
+    title = list(text = "<b>Inspection Grade</b>")))
 
 
 ```
