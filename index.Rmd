@@ -13,11 +13,9 @@ output:
 
 I learned all my data science from [P8105](https://p8105.com/)!
 
-To learn about my other learning, go [here](about.html)
+To learn about my other learning, go [here](about.html).
 
-To go to home, click [here](index.html)
+To go to home, click [here](index.html). 
 
-# Dashboard
-
-Here is my dashboard on NYC Restaurant Inspections [here](dashboard.html)
+[Here](dashboard.html) is my dashboard on NYC Restaurant Inspections.
 
