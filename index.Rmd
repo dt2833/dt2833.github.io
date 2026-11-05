@@ -15,7 +15,7 @@ I learned all my data science from [P8105](https://p8105.com/)!
 
 To learn about my other learning, go [here](about.html).
 
-To go to home, click [here](index.html). 
+To go home, click [here](index.html). 
 
 [Here](dashboard.html) is my dashboard on NYC Restaurant Inspections.
 
